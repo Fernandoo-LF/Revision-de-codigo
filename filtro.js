@@ -1,63 +1,67 @@
-// Tenemos un li de productos
-
+// Arreglo de objetos: cada objeto representa un producto
 const productos = [
-  {nombre: "Zapato negro", tipo: "zapato", color: "negro", img: "./taco-negro.jpg"},
-  {nombre: "Zapato azul", tipo: "zapato", color: "azul", img: "./taco-azul.jpg"},
-  {nombre: "Bota negra", tipo: "bota", color: "negro", img: "./bota-negra.jpg"},
-  {nombre: "Bota azul", tipo: "bota", color: "azul", img: "./bota-azul.jpg"},
-  {nombre: "Zapato rojo", tipo: "zapato", color: "rojo", img: "./zapato-rojo.jpg"}
-]
+  { nombre: "Zapato negro", tipo: "zapato", color: "negro", img: "./taco-negro.jpg" },
+  { nombre: "Zapato azul", tipo: "zapato", color: "azul", img: "./taco-azul.jpg" },
+  { nombre: "Bota negra", tipo: "bota", color: "negro", img: "./bota-negra.jpg" },
+  { nombre: "Bota azul", tipo: "bota", color: "azul", img: "./bota-azul.jpg" },
+  { nombre: "Zapato rojo", tipo: "zapato", color: "rojo", img: "./zapato-rojo.jpg" }
+];
 
-const li = document.getElementsByName("lista-de-productos")
-const $i = document.querySelector('.input');
+// Cambio: seleccionamos correctamente el contenedor usando su ID.
+// En el código original se usaba `getElementsByName`, que no sirve en este caso.
+const li = document.getElementById("lista-de-productos");
 
-for (let i = 0; i < productos.length; i++) {
-  var d = document.createElement("div")
-  d.classList.add("producto")
+//Cambio: el input no tenía clase, por eso `.input` no funcionaba.
+// Solución: darle un ID en el HTML y seleccionarlo con `getElementById`.
+const $i = document.getElementById("input-busqueda");
 
-  var ti = document.createElement("p")
-  ti.classList.add("titulo")
-  ti.textContent = productos[i].nombre
-  
-  var imagen = document.createElement("img");
-  imagen.setAttribute('src', productos[i].img);
+// Mostramos todos los productos al inicio
+// Esta parte la tenía después del for pero sin definir antes la función.
+displayProductos(productos);
 
-  d.appendChild(ti)
-  d.appendChild(imagen)
+// ✅ Creamos productos y los mostramos en pantalla
+function displayProductos(lista) {
+  li.innerHTML = ""; // limpia el contenedor antes de mostrar
 
-  li.appendChild(d)
+  // Recorremos el arreglo y creamos los elementos HTML para cada producto
+  for (let i = 0; i < lista.length; i++) {
+    let d = document.createElement("div");
+    d.classList.add("producto");
+
+    let ti = document.createElement("p");
+    ti.classList.add("titulo");
+    ti.textContent = lista[i].nombre;
+
+    let imagen = document.createElement("img");
+    imagen.setAttribute("src", lista[i].img);
+    imagen.setAttribute("alt", lista[i].nombre); // buena práctica
+
+    d.appendChild(ti);
+    d.appendChild(imagen);
+    li.appendChild(d);
+  }
 }
 
-displayProductos(productos)
+// 🔧 Seleccionamos el botón para aplicar el filtro
 const botonDeFiltro = document.querySelector("button");
 
-botonDeFiltro.onclick = function() {
-  while (li.firstChild) {
-    li.removeChild(li.firstChild);
-  }
+// Cuando el usuario hace clic en "Filtrar"
+botonDeFiltro.onclick = function () {
+  // Obtenemos el texto ingresado
+  const texto = $i.value.trim().toLowerCase(); // trim() limpia espacios extra
 
-  const texto = $i.value;
-  console.log(texto);
-  const productosFiltrados = filtrado(productos, texto );
+  // Filtramos la lista según el texto
+  const productosFiltrados = filtrado(productos, texto);
 
-  for (let i = 0; i < productosFiltrados.length; i++) {
-    var d = document.createElement("div")
-    d.classList.add("producto")
-  
-    var ti = document.createElement("p")
-    ti.classList.add("titulo")
-    ti.textContent = productosFiltrados[i].nombre
-    
-    var imagen = document.createElement("img");
-    imagen.setAttribute('src', productosFiltrados[i].img);
-  
-    d.appendChild(ti)
-    d.appendChild(imagen)
-  
-    li.appendChild(d)
-  }
+  // Mostramos solo los productos filtrados
+  displayProductos(productosFiltrados);
 }
 
+// ✅ Función para filtrar los productos
 const filtrado = (productos = [], texto) => {
-  return productos.filter(item => item.tipo.includes(texto) || item.color.includes(texto));
-}  
+  // Solo devolvemos productos cuyo tipo o color incluya el texto ingresado
+  return productos.filter(item =>
+    item.tipo.toLowerCase().includes(texto) ||
+    item.color.toLowerCase().includes(texto)
+  );
+}
