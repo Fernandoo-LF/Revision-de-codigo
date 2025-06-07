@@ -34,7 +34,7 @@ function displayProductos(lista) {
 
     let imagen = document.createElement("img");
     imagen.setAttribute("src", lista[i].img);
-    imagen.setAttribute("alt", lista[i].nombre); // buena práctica
+    imagen.setAttribute("alt", lista[i].nombre); 
 
     d.appendChild(ti);
     d.appendChild(imagen);
